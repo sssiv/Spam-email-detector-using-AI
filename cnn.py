@@ -7,7 +7,7 @@ from keras.models import load_model
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 import pickle
-from encoder import *
+from encoder import test_train_split_data
 
 '''
     RESULTS EXPLINATION
