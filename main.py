@@ -1,5 +1,5 @@
-from data import *
-from charts import *
+from data import Data, pd
+from charts import Charts
 from bayes import Bayes
 from cnn import CNN
 from svm import SVM
@@ -21,24 +21,23 @@ def df_3():
     df_data = data.df_dataset()
     return df_data
 
+# Add datasets concatenated
 def all_data():
     return pd.concat([df_1(), df_2(), df_3()])
 
 # Get and clean datasets
 df = all_data()
 
-cnn = CNN(df)  # 'df' can be any DataFrame, used for initializing CNN
 # Create CNN instance and assign loaded model and tokenizer
-# Assuming you have a DataFrame 'df' with your training data
-cnn.train_and_save_model('cnn_model.h5', 'tokenizer.pickle')
+cnn = CNN(df)  
+cnn.train_and_save_model('cnn_model.keras', 'tokenizer.pickle')
+model, tokenizer = cnn.load_model_and_tokenizer('cnn_model.keras', 'tokenizer.pickle')
 
-# Load model and tokenizer
-model, tokenizer = cnn.load_model_and_tokenizer('cnn_model.h5', 'tokenizer.pickle')
-
+# Set model and tokenizer
 cnn.model = model
 cnn.tokenizer = tokenizer
 
-# Use the model for prediction
+# Example spam and ham emails to test models
 ham = """
 Hi Team,
 
@@ -66,11 +65,13 @@ Report user if not CLAIM NOW! viagra for as low as $1 , we just need you to down
 Come to us asap mr or mrs usernameGenerator 
 """
 
-prediction = cnn.preprocess_and_predict(ham)
-print("Convolutional Neural-Network:\n\tGiven a ham Prediction:", prediction)
-
 prediction = cnn.preprocess_and_predict(spam)
 print("Convolutional Neural-Network:\n\tGiven a spam Prediction:", prediction)
+
+prediction = cnn.preprocess_and_predict(ham)
+print("Convolutional Neural-Network:\n\tGiven a ham Prediction:", prediction)
+print('-' * 20, '\n')
+
 # Visual Data Display
 '''
 charts = Charts(df)
@@ -96,3 +97,4 @@ print("Support Vector Machine:\n\tGiven a spam Prediction:", prediction)
 email_vector = vectorizer.transform([ham])
 prediction = svm_model.predict(email_vector)
 print("Support Vector Machine:\n\tGiven a ham Prediction:", prediction)
+print('-' * 20, '\n')
