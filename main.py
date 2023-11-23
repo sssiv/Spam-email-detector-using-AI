@@ -28,14 +28,17 @@ def all_data():
 # Get and clean datasets
 df = all_data()
 
-# Create CNN instance and assign loaded model and tokenizer
-cnn = CNN(df)  
-cnn.train_and_save_model('cnn_model.keras', 'tokenizer.pickle')
-model, tokenizer = cnn.load_model_and_tokenizer('cnn_model.keras', 'tokenizer.pickle')
-
-# Set model and tokenizer
-cnn.model = model
-cnn.tokenizer = tokenizer
+# Visual Data Display
+'''
+charts = Charts(df)
+charts.wordplot()
+charts.KDEplot()
+charts.barchart()
+charts.length_visual()
+charts.word_frequency()
+charts.scatterplot()
+charts.plot_common_word_frequencies()
+'''
 
 # Example spam and ham emails to test models
 ham = """
@@ -64,25 +67,21 @@ If you have Samsung Galaxy S24 Ultra, reply with Yes Or No for only $10! All via
 Report user if not CLAIM NOW! viagra for as low as $1 , we just need you to download this link to do so. 
 Come to us asap mr or mrs usernameGenerator 
 """
+# Create CNN instance and assign loaded model and tokenizer
+cnn = CNN(df)  
+cnn.train_and_save_model('cnn_model.keras', 'tokenizer.pickle')
+model, tokenizer = cnn.load_model_and_tokenizer('cnn_model.keras', 'tokenizer.pickle')
+
+# Set model and tokenizer
+cnn.model = model
+cnn.tokenizer = tokenizer
 
 prediction = cnn.preprocess_and_predict(spam)
 print("Convolutional Neural-Network:\n\tGiven a spam Prediction:", prediction)
-
+# print("This is a spam") if prediction > 0.5 else print("This is a NOT spam")
 prediction = cnn.preprocess_and_predict(ham)
 print("Convolutional Neural-Network:\n\tGiven a ham Prediction:", prediction)
 print('-' * 20, '\n')
-
-# Visual Data Display
-'''
-charts = Charts(df)
-charts.wordplot()
-charts.KDEplot()
-charts.barchart()
-charts.length_visual()
-charts.word_frequency()
-charts.scatterplot()
-charts.plot_common_word_frequencies()
-'''
 
 # SVM 
 svm = SVM(df)
