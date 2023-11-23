@@ -1,10 +1,8 @@
 from data import *
 from charts import *
-import pickle
 from bayes import Bayes
 from cnn import CNN
 from svm import SVM
-from keras.models import load_model
 
 '''
 It takes a while to load everything, so sometimes I 
@@ -34,19 +32,12 @@ cnn = CNN(df)  # 'df' can be any DataFrame, used for initializing CNN
 # Assuming you have a DataFrame 'df' with your training data
 cnn.train_and_save_model('cnn_model.h5', 'tokenizer.pickle')
 
-def load_model_and_tokenizer(model_filename, tokenizer_filename):
-    # Load the tokenizer reading as binary
-    with open(tokenizer_filename, 'rb') as handle:
-        tokenizer = pickle.load(handle)
-        
-    # Load and return the model and tokenizer file
-    return load_model(model_filename), tokenizer
-
 # Load model and tokenizer
-model, tokenizer = load_model_and_tokenizer('cnn_model.h5', 'tokenizer.pickle')
+model, tokenizer = cnn.load_model_and_tokenizer('cnn_model.h5', 'tokenizer.pickle')
 
 cnn.model = model
 cnn.tokenizer = tokenizer
+
 # Use the model for prediction
 ham = """
 Hi Team,
@@ -54,9 +45,8 @@ Hi Team,
 Due to a scheduling conflict, I'm rescheduling this week's project meeting to Friday at 3 PM. Please update your calendars accordingly. 
 
 We'll discuss the project's progress and next steps. If you have any specific items you'd like to add to the agenda, feel free to email me by Thursday noon.
-
 Thanks for your understanding, and looking forward to our productive discussion.
-
+Even if I try to add bias and put in words like 'viagra', these models will be able to pick properly.
 Best,
 Jordan
 Project Manager
@@ -64,20 +54,23 @@ Project Manager
 
 spam = """
 Hi mr or mrs usernameGenerator,
-	
-A user just logged into your Facebook account from a new device: ( Samsung Galaxy S24 Ultra ) Location: Dmitrov, Oblast de Moscou, Russie, 141101.
-We are sending you this email to verify it's really you.
-If you have Samsung Galaxy S24 Ultra, reply with Yes Or No
-Report user if not recognized , we just need you to download this link to do so. 
-Thanks,
-The Facebook Team 
+CLAIM NOW! CLAIM NOW! CLAIM NOW! CLAIM NOW! 
+WEL HELLO THER, USER,
+CONGRAUTUYGALASTIONS!!!!!!! CLAIM NOW! CLAIM NOW! 
+WE GOT SELECTED INDIVUDUUALS HERE WHO GET $100,000 FOR FREE viagra, all you have to do is give us your credit!
+Dont worry, all we are doing is simply funding you the given MONEY FOR FREE and maybe even even MONEY!
+Just submit to us your credit NUMBER1 and NUMBER2 and NUMBER3 to us and we will getCreditInfo();
+Make it MONEY FOR FREE AND you SPECIAL SELECTED for FREE viagra viagraFREE MONEY.
+If you have Samsung Galaxy S24 Ultra, reply with Yes Or No for only $10! All viagra YOURS
+Report user if not CLAIM NOW! viagra for as low as $1 , we just need you to download this link to do so. 
+Come to us asap mr or mrs usernameGenerator 
 """
 
 prediction = cnn.preprocess_and_predict(ham)
-print("Given a ham Prediction:", prediction)
+print("Convolutional Neural-Network:\n\tGiven a ham Prediction:", prediction)
 
 prediction = cnn.preprocess_and_predict(spam)
-print("Given a spam Prediction:", prediction)
+print("Convolutional Neural-Network:\n\tGiven a spam Prediction:", prediction)
 # Visual Data Display
 '''
 charts = Charts(df)
@@ -88,14 +81,18 @@ charts.length_visual()
 charts.word_frequency()
 charts.scatterplot()
 charts.plot_common_word_frequencies()
-
-# Naive Bayes
-bayes_model = Bayes(df)
-bayes_model.train()
-#test(bayes_model)
 '''
 
 # SVM 
-svm_model = SVM(df)
-svm_model.train()
-#test(svm_model)
+svm = SVM(df)
+svm.train_and_save_model('svm_model.pkl', 'vectorizer.pickle')
+
+svm_model, vectorizer = svm.load_model_and_vectorizer('svm_model.pkl', 'vectorizer.pickle')
+
+email_vector = vectorizer.transform([spam])
+prediction = svm_model.predict(email_vector)
+print("Support Vector Machine:\n\tGiven a spam Prediction:", prediction)
+
+email_vector = vectorizer.transform([ham])
+prediction = svm_model.predict(email_vector)
+print("Support Vector Machine:\n\tGiven a ham Prediction:", prediction)

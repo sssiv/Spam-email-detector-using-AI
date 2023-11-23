@@ -3,6 +3,7 @@ from tensorflow.keras.layers import Embedding, Conv1D, GlobalMaxPooling1D, Dense
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from keras.models import Sequential
+from keras.models import load_model
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 import pickle
@@ -186,3 +187,14 @@ class CNN:
         # Write binary
         with open(tokenizer_filename, 'wb') as handle:
             pickle.dump(self.tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    
+    @staticmethod
+    def load_model_and_tokenizer(model_filename, tokenizer_filename):
+        # Load in the model
+        cnn_model = load_model(model_filename)
+
+        # Load the tokenizer reading as binary
+        with open(tokenizer_filename, 'rb') as handle:
+            tokenizer = pickle.load(handle)
+
+        return cnn_model, tokenizer

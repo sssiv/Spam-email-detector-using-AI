@@ -1,4 +1,4 @@
-from encoder import *
+from encoder import fit_transform_vectorizer, test_train_split_data
 # SVC Model
 from sklearn.svm import SVC
 from sklearn import metrics
@@ -6,6 +6,9 @@ from sklearn import metrics
 # Makes Confusion matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+import pickle
+import joblib
 
 class SVM:
     # Initialize the class with a file path
@@ -46,3 +49,31 @@ class SVM:
         plt.xlabel('Predicted')
         plt.ylabel('Actual')
         plt.show()
+
+    def train_and_save_model(self, model_filename, vectorizer_filename):
+        self.train()
+        # Save the SVM model
+        joblib.dump(self.classifiers["SVM"], model_filename)
+
+        # Save the vectorizer
+        with open(vectorizer_filename, 'wb') as handle:
+            pickle.dump(self.vectorizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    @staticmethod
+    def load_model_and_vectorizer(model_filename, vectorizer_filename):
+        # Load the SVM model
+        svm_model = joblib.load(model_filename)
+
+        # Load the vectorizer
+        with open(vectorizer_filename, 'rb') as handle:
+            vectorizer = pickle.load(handle)
+
+        return svm_model, vectorizer
+    
+    def preprocess_and_predict(self, email):
+        # Preprocess the email using the vectorizer
+        email_vector = self.vectorizer.transform([email])
+
+        # Predict using the SVM classifier
+        prediction = self.classifiers["SVM"].predict(email_vector)
+        return prediction

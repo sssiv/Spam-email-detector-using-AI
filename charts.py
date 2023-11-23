@@ -3,9 +3,6 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 import seaborn as sns
 
-# Vectorize
-# from sklearn.feature_extraction.text import TfidfVectorizer
-
 # Dataframe
 import pandas as pd
 
@@ -16,7 +13,7 @@ from nltk.corpus import stopwords
 # Used to find any type of most common type of whatever data you pick
 from collections import Counter
 
-from encoder import *
+from encoder import fit_vectorizer
 
 class Charts:
     def __init__(self, df):

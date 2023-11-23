@@ -1,4 +1,4 @@
-from encoder import *
+from encoder import fit_transform_vectorizer, test_train_split_data
 from sklearn.naive_bayes import MultinomialNB
 from sklearn import metrics
 
