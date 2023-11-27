@@ -85,10 +85,10 @@ class CNN:
         #-----------------------------------------------------------------------#
         '''
         Conv1D Layer:
-            Remember the magnifying glass you'd use to spot fun patterns in your drawings?
+            Think of a magnifying glass used to spot patterns in a drawing
             Conv1D does that for sequences of words. 
             With "128" different magnifying glasses each focusing on 
-            a specific pattern, and "10" being the size of the pattern they're trying to find.
+            a specific pattern, and "10" being the size of the patterns they're trying to find.
             It's looking for special combinations of words or characters.
         '''
         model.add(Conv1D(500, 10, activation='swish'))   # was relu

@@ -67,6 +67,7 @@ If you have Samsung Galaxy S24 Ultra, reply with Yes Or No for only $10! All via
 Report user if not CLAIM NOW! viagra for as low as $1 , we just need you to download this link to do so. 
 Come to us asap mr or mrs usernameGenerator 
 """
+
 # Create CNN instance and assign loaded model and tokenizer
 cnn = CNN(df)  
 cnn.train_and_save_model('cnn_model.keras', 'tokenizer.pickle')
@@ -77,11 +78,11 @@ cnn.model = model
 cnn.tokenizer = tokenizer
 
 prediction = cnn.preprocess_and_predict(spam)
-print("Convolutional Neural-Network:\n\tGiven a spam Prediction:", prediction)
-# print("This is a spam") if prediction > 0.5 else print("This is a NOT spam")
+print("Convolutional Neural-Network:\n\tGiven spam Prediction:", prediction)
+# print("Correctly identified as spam\n") if prediction > 0.5 else print("Incorrectly identified as")
 prediction = cnn.preprocess_and_predict(ham)
-print("Convolutional Neural-Network:\n\tGiven a ham Prediction:", prediction)
-print('-' * 20, '\n')
+print("Convolutional Neural-Network:\n\tGiven ham Prediction:", prediction)
+print('-' * 75, '\n')
 
 # SVM 
 svm = SVM(df)
@@ -96,4 +97,19 @@ print("Support Vector Machine:\n\tGiven a spam Prediction:", prediction)
 email_vector = vectorizer.transform([ham])
 prediction = svm_model.predict(email_vector)
 print("Support Vector Machine:\n\tGiven a ham Prediction:", prediction)
-print('-' * 20, '\n')
+print('-' * 75, '\n')
+
+# Bayes
+bayes = Bayes(df)
+bayes.train_and_save_model('naive_bayes_model.pkl', 'vectorizer.pickle')
+
+bayes_model, vectorizer = bayes.load_model_and_vectorizer('naive_bayes_model.pkl', 'vectorizer.pickle')
+
+email_vector = vectorizer.transform([spam])
+prediction = bayes_model.predict(email_vector)
+print("Naive Bayes:\n\tGiven a spam Prediction:", prediction)
+
+email_vector = vectorizer.transform([ham])
+prediction = bayes_model.predict(email_vector)
+print("Naive Bayes:\n\tGiven a ham Prediction:", prediction)
+print('-' * 75, '\n')

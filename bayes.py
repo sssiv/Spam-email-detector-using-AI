@@ -6,6 +6,9 @@ from sklearn import metrics
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+import pickle
+import joblib
+
 class Bayes:
     ## Initialize the class with a dataframe
     def __init__(self, df):
@@ -46,18 +49,30 @@ class Bayes:
         plt.ylabel('Actual')
         plt.show()
 
-    # Function to predict the label for a given email content
-    def predict_email(self, email_content):
-        spam = False
-        # Transform the email content using TF-IDF vectorizer
-        email_vectorized = self.vectorizer.transform([email_content])
-        for name, clf in self.classifiers.items():
-            prediction = clf.predict(email_vectorized)
-            confidence = clf.predict_proba(email_vectorized)
-            if prediction == 0:
-                spam = False
-                print(f"{name} predicts: Ham with {confidence[0][0]*100:.2f}% confidence")
-            else:
-                spam = True
-                print(f"{name} predicts: Spam with {confidence[0][1]*100:.2f}% confidence")
-        return spam
+    def train_and_save_model(self, model_filename, vectorizer_filename):
+        self.train()
+        # Save the SVM model
+        joblib.dump(self.classifiers["Naive Bayes"], model_filename)
+
+        # Save the vectorizer
+        with open(vectorizer_filename, 'wb') as handle:
+            pickle.dump(self.vectorizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    @staticmethod
+    def load_model_and_vectorizer(model_filename, vectorizer_filename):
+        # Load the SVM model
+        svm_model = joblib.load(model_filename)
+
+        # Load the vectorizer
+        with open(vectorizer_filename, 'rb') as handle:
+            vectorizer = pickle.load(handle)
+
+        return svm_model, vectorizer
+    
+    def preprocess_and_predict(self, email):
+        # Preprocess the email using the vectorizer
+        email_vector = self.vectorizer.transform([email])
+
+        # Predict using the SVM classifier
+        prediction = self.classifiers["Naive Bayes"].predict(email_vector)
+        return prediction
