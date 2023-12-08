@@ -5,13 +5,13 @@ import pandas as pd
 import nltk
 from nltk.corpus import words, stopwords
 from nltk.tokenize import word_tokenize
+from functools import cache
 
 # Regular Expression: string ideitifying and manipulating libraries 
 import re
 
 # Used to Normalize data
 from sklearn.preprocessing import MinMaxScaler
-
 
 # Takes in the csv file
 # Removes junk data
@@ -99,8 +99,11 @@ class Data():
 
     # Define a function that handles the conditional logic
     def fill_missing_labels(self, row):
+        # If we have 'label', but not 'label_num'
         if pd.isna(row['label']) and not pd.isna(row['label_num']):
             return "spam" if row['label_num'] == 1 else "ham"
+        
+        # If we have 'label_num', but not 'label'
         if pd.isna(row['label_num']) and not pd.isna(row['label']):
             return 1 if row['label'].lower() == "spam" else 0
         return row['label']
@@ -299,5 +302,6 @@ class Data():
         for word in words_to_remove:
             self.df['text'] = self.df['text'].str.replace(rf'\b{word}\b', ' ', regex=True)   
        
+    @cache
     def df_dataset(self):
         return self.df
